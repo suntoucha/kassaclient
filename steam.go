@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -105,4 +106,27 @@ func (x KassaClient) SteamCart(cartId string, account string, amount float64, ca
 
 	return resp.SteamCart, nil
 
+}
+
+type SteamCallback struct {
+	CartId string `json:"cart_id"`
+	Status string `json:"status"`
+	Error  string `json:"error"`
+}
+
+func (x KassaClient) SteamCallback(r *http.Request) (SteamCallback, error) {
+	body, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+
+	if err != nil {
+		return SteamCallback{}, err
+	}
+
+	cb := SteamCallback{}
+	err = json.Unmarshal(body, &cb)
+	if err != nil {
+		return SteamCallback{}, err
+	}
+
+	return cb, nil
 }
