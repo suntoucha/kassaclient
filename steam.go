@@ -110,9 +110,10 @@ func (x KassaClient) SteamCart(cartId string, account string, amount float64, ca
 }
 
 type SteamCallback struct {
-	CartId string `json:"cart_id"`
-	Status string `json:"status"`
-	Error  string `json:"error"`
+	ProviderPayId string `json:"provider_pay_id"`
+	CartId        string `json:"cart_id"`
+	Status        string `json:"status"`
+	Error         string `json:"error"`
 }
 
 func (x KassaClient) SteamCallback(r *http.Request) (SteamCallback, error) {
