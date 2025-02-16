@@ -47,9 +47,10 @@ func (x KassaClient) SteamValidate(account string) (bool, error) {
 }
 
 type SteamPay struct {
-	Price  float64 `json:"price"`
-	Method string  `json:"method"`
-	Url    string  `json:"url"`
+	ProviderPayId string  `json:"provider_pay_id"`
+	Price         float64 `json:"price"`
+	Method        string  `json:"method"`
+	Url           string  `json:"url"`
 }
 
 type SteamCart struct {
