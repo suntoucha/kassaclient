@@ -65,7 +65,7 @@ type Cart struct {
 	Pay         []PaymentOption `json:"pay"`
 }
 
-func (x KassaClient) CreateCart(game string, cartId string, account string, amount float64, callbackUrl string) (Cart, error) {
+func (x KassaClient) Cart(cartId string, game string, account string, amount float64, callbackUrl string) (Cart, error) {
 	type Request struct {
 		CartId      string  `json:"cart_id"`
 		Account     string  `json:"account"`
@@ -143,7 +143,7 @@ type Product struct {
 	Price       float64 `json:"price"`
 }
 
-func (x KassaClient) GetProducts(game string) ([]Product, error) {
+func (x KassaClient) Products(game string) ([]Product, error) {
 	req, err := http.NewRequest("GET", x.BaseUrl+"/"+game+"/products", nil)
 	if err != nil {
 		return nil, err

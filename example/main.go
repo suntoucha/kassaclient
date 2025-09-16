@@ -25,7 +25,7 @@ func main() {
 		id = uu.String()
 	}
 
-	cart, err := cli.CreateCart("steam", id, "world_dragon_508", 2, "https://croc.kassa.games/callback")
+	cart, err := cli.Cart(id, "steam", "world_dragon_508", 2, "https://croc.kassa.games/callback")
 	fmt.Printf("Steam cart result: %#v, error: %v\n", cart, err)
 
 	fmt.Printf("\n=== GENSHIN IMPACT TEST ===\n")
@@ -34,7 +34,7 @@ func main() {
 	fmt.Printf("Genshin validate result: %v, error: %v\n", validGenshin, errGenshin)
 
 	// Получаем продукты для Genshin
-	productsGenshin, errGenshin2 := cli.GetProducts("genshin")
+	productsGenshin, errGenshin2 := cli.Products("genshin")
 	fmt.Printf("Genshin products result: %#v, error: %v\n", productsGenshin, errGenshin2)
 
 	fmt.Printf("\n=== HONKAI STAR RAIL TEST ===\n")
@@ -43,7 +43,7 @@ func main() {
 	fmt.Printf("HSR validate result: %v, error: %v\n", validHSR, errHSR)
 
 	// Получаем продукты для HSR
-	productsHSR, errHSR2 := cli.GetProducts("honkai-star-rail")
+	productsHSR, errHSR2 := cli.Products("honkai-star-rail")
 	fmt.Printf("HSR products result: %#v, error: %v\n", productsHSR, errHSR2)
 
 	fmt.Printf("\n=== ZENLESS ZONE ZERO TEST ===\n")
@@ -52,7 +52,7 @@ func main() {
 	fmt.Printf("ZZZ validate result: %v, error: %v\n", validZZZ, errZZZ)
 
 	// Получаем продукты для ZZZ
-	productsZZZ, errZZZ2 := cli.GetProducts("zenless-zone-zero")
+	productsZZZ, errZZZ2 := cli.Products("zenless-zone-zero")
 	fmt.Printf("ZZZ products result: %#v, error: %v\n", productsZZZ, errZZZ2)
 
 	http.HandleFunc("/callback", hello)
