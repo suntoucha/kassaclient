@@ -147,8 +147,19 @@ type Product struct {
 	Price       float64 `json:"price"`
 }
 
-func (x KassaClient) Products(game string) ([]Product, error) {
-	req, err := http.NewRequest("GET", x.BaseUrl+"/"+game+"/products", nil)
+func (x KassaClient) Product(game string, serverId string) ([]Product, error) {
+	type Request struct {
+		ServerId string `json:"server_id"`
+	}
+
+	jsonData, err := json.Marshal(Request{
+		ServerId: serverId,
+	})
+	if err != nil {
+		return []Product{}, err
+	}
+
+	req, err := http.NewRequest("POST", x.BaseUrl+"/"+game+"/product", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, err
 	}
@@ -161,13 +172,13 @@ func (x KassaClient) Products(game string) ([]Product, error) {
 	}
 
 	if code != 200 {
-		return nil, fmt.Errorf("GetProducts request failed, code: %v", code)
+		return nil, fmt.Errorf("GetProducts request failed, code: %v, body: %v", code, body)
 	}
 
 	type Response struct {
-		Status   string    `json:"status"`
-		Error    string    `json:"error"`
-		Products []Product `json:"products"`
+		Status  string    `json:"status"`
+		Error   string    `json:"error"`
+		Product []Product `json:"product"`
 	}
 	var resp Response
 	err = json.Unmarshal([]byte(body), &resp)
@@ -179,5 +190,5 @@ func (x KassaClient) Products(game string) ([]Product, error) {
 		return nil, fmt.Errorf("GetProducts request failed, status: %v, error: %v", resp.Status, resp.Error)
 	}
 
-	return resp.Products, nil
+	return resp.Product, nil
 }

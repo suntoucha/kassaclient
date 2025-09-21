@@ -11,6 +11,7 @@ import (
 func main() {
 	// Универсальный клиент для всех игр
 	cli := kassaclient.KassaClient{Token: "hellohello", BaseUrl: "https://api.kassa.games"}
+	//cli := kassaclient.KassaClient{Token: "hellohello", BaseUrl: "http://localhost:10987"}
 	fmt.Printf("Universal client: [%#v]\n", cli)
 
 	fmt.Printf("\n=== STEAM TEST ===\n")
@@ -32,28 +33,25 @@ func main() {
 	// Валидируем Genshin аккаунт
 	validGenshin, serverId, serverName, errGenshin := cli.Validate("genshin", "783437191")
 	fmt.Printf("Genshin validate results: valid - %v, serverId - %v, serverName - %v, error: %v\n", validGenshin, serverId, serverName, errGenshin)
-
 	// Получаем продукты для Genshin
-	productsGenshin, errGenshin2 := cli.Products("genshin")
-	fmt.Printf("Genshin products result: %#v, error: %v\n", productsGenshin, errGenshin2)
+	productGenshin, errGenshin2 := cli.Product("genshin", serverId)
+	fmt.Printf("Genshin product result: %#v, error: %v\n", productGenshin, errGenshin2)
 
 	fmt.Printf("\n=== HONKAI STAR RAIL TEST ===\n")
 	// Валидируем HSR аккаунт
 	validHSR, serverId, serverName, errHSR := cli.Validate("honkai-star-rail", "722354753")
-	fmt.Printf("HSR validate result: %v, error: %v\n", validHSR, errHSR)
-
+	fmt.Printf("HSR validate results: valid - %#v, serverId - %v, serverName - %v, error: %v\n", validHSR, serverId, serverName, errHSR)
 	// Получаем продукты для HSR
-	productsHSR, errHSR2 := cli.Products("honkai-star-rail")
-	fmt.Printf("HSR products results: valid - %#v, serverId - %v, serverName - %v, error: %v\n", productsHSR, serverId, serverName, errHSR2)
+	productHSR, errHSR2 := cli.Product("honkai-star-rail", serverId)
+	fmt.Printf("HRS product result: %#v, error: %v\n", productHSR, errHSR2)
 
 	fmt.Printf("\n=== ZENLESS ZONE ZERO TEST ===\n")
 	// Валидируем ZZZ аккаунт
 	validZZZ, serverId, serverName, errZZZ := cli.Validate("zenless-zone-zero", "1506168129")
 	fmt.Printf("ZZZ validate results: valid - %v, serverId - %v, serverName - %v, error: %v\n", validZZZ, serverId, serverName, errZZZ)
-
 	// Получаем продукты для ZZZ
-	productsZZZ, errZZZ2 := cli.Products("zenless-zone-zero")
-	fmt.Printf("ZZZ products result: %#v, error: %v\n", productsZZZ, errZZZ2)
+	productZZZ, errZZZ2 := cli.Product("zenless-zone-zero", serverId)
+	fmt.Printf("ZZZ product result: %#v, error: %v\n", productZZZ, errZZZ2)
 
 	http.HandleFunc("/callback", hello)
 	fmt.Println("Listen and serve: ", http.ListenAndServe(":9999", nil))
