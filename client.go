@@ -13,41 +13,45 @@ type KassaClient struct {
 	Token   string `json:"token"`
 }
 
-func (x KassaClient) Validate(game string, account string) (bool, error) {
+func (x KassaClient) Validate(game string, account string) (bool, string, string, error) {
 	type Request struct {
 		Account string `json:"account"`
 	}
 	jsonData, err := json.Marshal(Request{Account: account})
 	if err != nil {
-		return false, err
+		return false, "", "", err
 	}
 
 	req, err := http.NewRequest("POST", x.BaseUrl+"/"+game+"/validate", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return false, err
+		return false, "", "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("token", x.Token)
 
 	code, body, err := execute(req)
 	if err != nil {
-		return false, err
+		return false, "", "", err
 	}
 
 	if code != 200 {
-		return false, fmt.Errorf("Validate request failed, code: %v", code)
+		return false, "", "", fmt.Errorf("Validate request failed, code: %v", code)
 	}
 
 	type Response struct {
-		Valid bool `json:"valid"`
+		Valid  bool `json:"valid"`
+		Server struct {
+			Id   string `json:"id"`
+			Name string `json:"name"`
+		} `json:"server"`
 	}
 	var resp Response
 	err = json.Unmarshal([]byte(body), &resp)
 	if err != nil {
-		return false, err
+		return false, "", "", err
 	}
 
-	return resp.Valid, nil
+	return resp.Valid, resp.Server.Id, resp.Server.Name, nil
 }
 
 type PaymentOption struct {
