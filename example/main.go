@@ -37,6 +37,17 @@ func main() {
 	productGenshin, errGenshin2 := cli.Product("genshin", serverId)
 	fmt.Printf("Genshin product result: %#v, error: %v\n", productGenshin, errGenshin2)
 
+	// Создаем корзину для Genshin с server_id
+	if validGenshin && serverId != "" {
+		uu2, err := uuid.NewUUID()
+		genshinCartId := "no-id-genshin"
+		if err == nil {
+			genshinCartId = uu2.String()
+		}
+		cartGenshin, errCart := cli.Cart(genshinCartId, "genshin", "783437191", 0.77, "https://croc.kassa.games/callback", serverId)
+		fmt.Printf("Genshin cart result: %#v, error: %v\n", cartGenshin, errCart)
+	}
+
 	fmt.Printf("\n=== HONKAI STAR RAIL TEST ===\n")
 	// Валидируем HSR аккаунт
 	validHSR, serverId, serverName, errHSR := cli.Validate("honkai-star-rail", "722354753")
