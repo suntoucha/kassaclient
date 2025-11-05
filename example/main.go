@@ -10,8 +10,8 @@ import (
 
 func main() {
 	// Универсальный клиент для всех игр
-	cli := kassaclient.KassaClient{Token: "hellohello", BaseUrl: "https://api.kassa.games"}
-	//cli := kassaclient.KassaClient{Token: "hellohello", BaseUrl: "http://localhost:10987"}
+	//cli := kassaclient.KassaClient{Token: "hellohello", BaseUrl: "https://api.kassa.games"}
+	cli := kassaclient.KassaClient{Token: "hellohello", BaseUrl: "http://localhost:10987"}
 	fmt.Printf("Universal client: [%#v]\n", cli)
 
 	fmt.Printf("\n=== STEAM TEST ===\n")
@@ -26,7 +26,7 @@ func main() {
 		id = uu.String()
 	}
 
-	cart, err := cli.Cart(id, "steam", "world_dragon_508", 2, "https://croc.kassa.games/callback")
+	cart, err := cli.Cart(id, "steam", "world_dragon_508", 2, "https://croc.kassa.games/callback", "", "")
 	fmt.Printf("Steam cart result: %#v, error: %v\n", cart, err)
 
 	fmt.Printf("\n=== GENSHIN IMPACT TEST ===\n")
@@ -44,7 +44,7 @@ func main() {
 		if err == nil {
 			genshinCartId = uu2.String()
 		}
-		cartGenshin, errCart := cli.Cart(genshinCartId, "genshin", "783437191", 0.77, "https://croc.kassa.games/callback", serverId)
+		cartGenshin, errCart := cli.Cart(genshinCartId, "genshin", "783437191", 0.77, "https://croc.kassa.games/callback", "", serverId)
 		fmt.Printf("Genshin cart result: %#v, error: %v\n", cartGenshin, errCart)
 	}
 
@@ -63,6 +63,26 @@ func main() {
 	// Получаем продукты для ZZZ
 	productZZZ, errZZZ2 := cli.Product("zenless-zone-zero", serverId)
 	fmt.Printf("ZZZ product result: %#v, error: %v\n", productZZZ, errZZZ2)
+
+	fmt.Printf("\n=== PAYMENT STATUS TEST ===\n")
+	// Тест с реальным платежом из БД
+	statusResp, err := cli.PaymentStatus("steam", "test_plnk_payment_12345")
+	fmt.Printf("PaymentStatus response (success): status - %v, providerPayId - %v, error: %v\n",
+		statusResp.Status, statusResp.ProviderPayId, err)
+	if len(statusResp.Pay) > 0 {
+		fmt.Printf("Payment info: price - %.2f, method - %v, url - %v\n",
+			statusResp.Pay[0].Price, statusResp.Pay[0].Method, statusResp.Pay[0].Url)
+	}
+
+	// Тест с несуществующим платежом
+	statusResp2, err2 := cli.PaymentStatus("steam", "non_existing_payment_999")
+	fmt.Printf("PaymentStatus response (not found): status - %v, providerPayId - %v, error: %v\n",
+		statusResp2.Status, statusResp2.ProviderPayId, err2)
+
+	// Тест с существующим платежом без статуса
+	statusResp3, err3 := cli.PaymentStatus("steam", "48ffa790-051a-4d9c-b908-076a16134e58")
+	fmt.Printf("PaymentStatus response (no status): status - %v, providerPayId - %v, error: %v\n",
+		statusResp3.Status, statusResp3.ProviderPayId, err3)
 
 	http.HandleFunc("/callback", hello)
 	fmt.Println("Listen and serve: ", http.ListenAndServe(":9999", nil))

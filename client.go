@@ -69,6 +69,19 @@ type Cart struct {
 	Pay         []PaymentOption `json:"pay"`
 }
 
+type PaymentStatusResponse struct {
+	Status         string          `json:"status"`
+	ProviderPayId  string          `json:"provider_pay_id"`
+	Account        string          `json:"account"`
+	Amount         float64         `json:"amount"`
+	Pay            []PaymentOption `json:"pay"`
+	LastStatus     interface{}     `json:"last_status,omitempty"`
+	Server         struct {
+		Id   string `json:"id"`
+		Name string `json:"name"`
+	} `json:"server"`
+}
+
 func (x KassaClient) Cart(cartId string, game string, account string, amount float64, callbackUrl string, productId string, serverId string) (Cart, error) {
 	type Request struct {
 		CartId      string  `json:"cart_id"`
@@ -196,4 +209,39 @@ func (x KassaClient) Product(game string, serverId string) ([]Product, error) {
 	}
 
 	return resp.Product, nil
+}
+
+func (x KassaClient) PaymentStatus(game string, providerPayId string) (PaymentStatusResponse, error) {
+	type Request struct {
+		ProviderPayId string `json:"provider_pay_id"`
+	}
+
+	jsonData, err := json.Marshal(Request{ProviderPayId: providerPayId})
+	if err != nil {
+		return PaymentStatusResponse{}, err
+	}
+
+	req, err := http.NewRequest("POST", x.BaseUrl+"/"+game+"/status", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return PaymentStatusResponse{}, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("token", x.Token)
+
+	code, body, err := execute(req)
+	if err != nil {
+		return PaymentStatusResponse{}, err
+	}
+
+	if code != 200 {
+		return PaymentStatusResponse{}, fmt.Errorf("PaymentStatus request failed, code: %v, body: %v", code, body)
+	}
+
+	var resp PaymentStatusResponse
+	err = json.Unmarshal([]byte(body), &resp)
+	if err != nil {
+		return PaymentStatusResponse{}, err
+	}
+
+	return resp, nil
 }
