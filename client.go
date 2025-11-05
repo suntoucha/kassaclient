@@ -75,7 +75,7 @@ type PaymentStatusResponse struct {
 	Account        string          `json:"account"`
 	Amount         float64         `json:"amount"`
 	Pay            []PaymentOption `json:"pay"`
-	LastStatus     interface{}     `json:"last_status,omitempty"`
+	LastStatus     string          `json:"last_status,omitempty"`
 	Server         struct {
 		Id   string `json:"id"`
 		Name string `json:"name"`
