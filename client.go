@@ -70,13 +70,13 @@ type Cart struct {
 }
 
 type PaymentStatusResponse struct {
-	Status         string          `json:"status"`
-	ProviderPayId  string          `json:"provider_pay_id"`
-	Account        string          `json:"account"`
-	Amount         float64         `json:"amount"`
-	Pay            []PaymentOption `json:"pay"`
-	LastStatus     string          `json:"last_status,omitempty"`
-	Server         struct {
+	Status        string          `json:"status"`
+	ProviderPayId string          `json:"provider_pay_id"`
+	Account       string          `json:"account"`
+	Amount        float64         `json:"amount"`
+	Pay           []PaymentOption `json:"pay"`
+	PayStatus     string          `json:"pay_status,omitempty"`
+	Server        struct {
 		Id   string `json:"id"`
 		Name string `json:"name"`
 	} `json:"server"`
