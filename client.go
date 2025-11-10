@@ -211,7 +211,7 @@ func (x KassaClient) Product(game string, serverId string) ([]Product, error) {
 	return resp.Product, nil
 }
 
-func (x KassaClient) PaymentStatus(game string, providerPayId string) (PaymentStatusResponse, error) {
+func (x KassaClient) PayStatus(providerPayId string) (PaymentStatusResponse, error) {
 	type Request struct {
 		ProviderPayId string `json:"provider_pay_id"`
 	}
@@ -221,7 +221,7 @@ func (x KassaClient) PaymentStatus(game string, providerPayId string) (PaymentSt
 		return PaymentStatusResponse{}, err
 	}
 
-	req, err := http.NewRequest("POST", x.BaseUrl+"/"+game+"/status", bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", x.BaseUrl+"/pay_status", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return PaymentStatusResponse{}, err
 	}
