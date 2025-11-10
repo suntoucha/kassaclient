@@ -69,7 +69,7 @@ type Cart struct {
 	Pay         []PaymentOption `json:"pay"`
 }
 
-func (x KassaClient) Cart(cartId string, game string, account string, amount float64, callbackUrl string, productId string, serverId string) (Cart, error) {
+func (x KassaClient) Cart(cartId string, game string, account string, amount float64, callbackUrl string, productId string, serverId string, customCoef float64) (Cart, error) {
 	type Request struct {
 		CartId      string  `json:"cart_id"`
 		Account     string  `json:"account"`
@@ -77,6 +77,7 @@ func (x KassaClient) Cart(cartId string, game string, account string, amount flo
 		ProductId   string  `json:"product_id,omitempty"`
 		CallbackUrl string  `json:"callback_url"`
 		ServerId    string  `json:"server_id,omitempty"`
+		CustomCoef  float64 `json:"custom_coef,omitempty"`
 	}
 
 	jsonData, err := json.Marshal(Request{
@@ -86,6 +87,7 @@ func (x KassaClient) Cart(cartId string, game string, account string, amount flo
 		ProductId:   productId,
 		CallbackUrl: callbackUrl,
 		ServerId:    serverId,
+		CustomCoef:  customCoef,
 	})
 	if err != nil {
 		return Cart{}, err
