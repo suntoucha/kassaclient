@@ -199,3 +199,38 @@ func (x KassaClient) Product(game string, serverId string) ([]Product, error) {
 
 	return resp.Product, nil
 }
+
+func (x KassaClient) PayStatus(providerPayId string) (PaymentStatusResponse, error) {
+	type Request struct {
+		ProviderPayId string `json:"provider_pay_id"`
+	}
+
+	jsonData, err := json.Marshal(Request{ProviderPayId: providerPayId})
+	if err != nil {
+		return PaymentStatusResponse{}, err
+	}
+
+	req, err := http.NewRequest("POST", x.BaseUrl+"/pay_status", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return PaymentStatusResponse{}, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("token", x.Token)
+
+	code, body, err := execute(req)
+	if err != nil {
+		return PaymentStatusResponse{}, err
+	}
+
+	if code != 200 {
+		return PaymentStatusResponse{}, fmt.Errorf("PaymentStatus request failed, code: %v, body: %v", code, body)
+	}
+
+	var resp PaymentStatusResponse
+	err = json.Unmarshal([]byte(body), &resp)
+	if err != nil {
+		return PaymentStatusResponse{}, err
+	}
+
+	return resp, nil
+}
