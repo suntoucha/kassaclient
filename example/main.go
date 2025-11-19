@@ -26,10 +26,10 @@ func main() {
 		id = uu.String()
 	}
 
-	cart, err := cli.Cart(id, "steam", "world_dragon_508", 2, "https://croc.kassa.games/callback", "", "")
+	cart, err := cli.Cart(id, "steam", "world_dragon_508", 2, "https://croc.kassa.games/callback", "", "", 1.0)
 	fmt.Printf("Steam cart result: %#v, error: %v\n", cart, err)
 
-	fmt.Printf("\n=== GENSHIN IMPACT TEST ===\n")
+	fmt.Printf("\n=== GENSHIN IMPACT TEST (cart coef example) ===\n")
 	// Валидируем Genshin аккаунт
 	validGenshin, serverId, serverName, errGenshin := cli.Validate("genshin", "783437191")
 	fmt.Printf("Genshin validate results: valid - %v, serverId - %v, serverName - %v, error: %v\n", validGenshin, serverId, serverName, errGenshin)
@@ -37,15 +37,15 @@ func main() {
 	productGenshin, errGenshin2 := cli.Product("genshin", serverId)
 	fmt.Printf("Genshin product result: %#v, error: %v\n", productGenshin, errGenshin2)
 
-	// Создаем корзину для Genshin с server_id
+	// Создаем корзину для Genshin с сервером и коэффициентом
 	if validGenshin && serverId != "" {
 		uu2, err := uuid.NewUUID()
 		genshinCartId := "no-id-genshin"
 		if err == nil {
 			genshinCartId = uu2.String()
 		}
-		cartGenshin, errCart := cli.Cart(genshinCartId, "genshin", "783437191", 0.77, "https://croc.kassa.games/callback", "", serverId)
-		fmt.Printf("Genshin cart result: %#v, error: %v\n", cartGenshin, errCart)
+		cartGenshin, errCart := cli.Cart(genshinCartId, "genshin", "783437191", 0.77, "https://croc.kassa.games/callback", "", serverId, 0.95)
+		fmt.Printf("Genshin cart result with coef=0.95: %#v, error: %v\n", cartGenshin, errCart)
 	}
 
 	fmt.Printf("\n=== HONKAI STAR RAIL TEST ===\n")
