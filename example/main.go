@@ -34,7 +34,7 @@ func main() {
 	validGenshin, serverId, serverName, errGenshin := cli.Validate("genshin", "783437191")
 	fmt.Printf("Genshin validate results: valid - %v, serverId - %v, serverName - %v, error: %v\n", validGenshin, serverId, serverName, errGenshin)
 	// Получаем продукты для Genshin
-	productGenshin, errGenshin2 := cli.Product("genshin", serverId)
+	productGenshin, errGenshin2 := cli.Product("genshin", serverId, "")
 	fmt.Printf("Genshin product result: %#v, error: %v\n", productGenshin, errGenshin2)
 
 	// Создаем корзину для Genshin с сервером и коэффициентом
@@ -53,7 +53,7 @@ func main() {
 	validHSR, serverId, serverName, errHSR := cli.Validate("honkai-star-rail", "722354753")
 	fmt.Printf("HSR validate results: valid - %#v, serverId - %v, serverName - %v, error: %v\n", validHSR, serverId, serverName, errHSR)
 	// Получаем продукты для HSR
-	productHSR, errHSR2 := cli.Product("honkai-star-rail", serverId)
+	productHSR, errHSR2 := cli.Product("honkai-star-rail", serverId, "")
 	fmt.Printf("HRS product result: %#v, error: %v\n", productHSR, errHSR2)
 
 	fmt.Printf("\n=== ZENLESS ZONE ZERO TEST ===\n")
@@ -61,7 +61,7 @@ func main() {
 	validZZZ, serverId, serverName, errZZZ := cli.Validate("zenless-zone-zero", "1506168129")
 	fmt.Printf("ZZZ validate results: valid - %v, serverId - %v, serverName - %v, error: %v\n", validZZZ, serverId, serverName, errZZZ)
 	// Получаем продукты для ZZZ
-	productZZZ, errZZZ2 := cli.Product("zenless-zone-zero", serverId)
+	productZZZ, errZZZ2 := cli.Product("zenless-zone-zero", serverId, "")
 	fmt.Printf("ZZZ product result: %#v, error: %v\n", productZZZ, errZZZ2)
 
 	fmt.Printf("\n=== PAY STATUS TEST ===\n")

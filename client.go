@@ -167,13 +167,15 @@ type Product struct {
 	Price       float64 `json:"price"`
 }
 
-func (x KassaClient) Product(game string, serverId string) ([]Product, error) {
+func (x KassaClient) Product(game string, serverId string, account string) ([]Product, error) {
 	type Request struct {
-		ServerId string `json:"server_id"`
+		ServerId string `json:"server_id,omitempty"`
+		Account  string `json:"account,omitempty"`
 	}
 
 	jsonData, err := json.Marshal(Request{
 		ServerId: serverId,
+		Account:  account,
 	})
 	if err != nil {
 		return []Product{}, err
