@@ -167,7 +167,7 @@ type Product struct {
 	Price       float64 `json:"price"`
 }
 
-func (x KassaClient) Product(game string, serverId string, account string) ([]Product, error) {
+func (x KassaClient) Product(game string, serverId string, account string) ([]Product, float64, error) {
 	type Request struct {
 		ServerId string `json:"server_id,omitempty"`
 		Account  string `json:"account,omitempty"`
@@ -178,41 +178,85 @@ func (x KassaClient) Product(game string, serverId string, account string) ([]Pr
 		Account:  account,
 	})
 	if err != nil {
-		return []Product{}, err
+		return []Product{}, 1.0, err
 	}
 
 	req, err := http.NewRequest("POST", x.BaseUrl+"/"+game+"/product", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return nil, err
+		return nil, 1.0, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("token", x.Token)
 
 	code, body, err := execute(req)
 	if err != nil {
-		return nil, err
+		return nil, 1.0, err
 	}
 
 	if code != 200 {
-		return nil, fmt.Errorf("GetProducts request failed, code: %v, body: %v", code, body)
+		return nil, 1.0, fmt.Errorf("GetProducts request failed, code: %v, body: %v", code, body)
 	}
 
 	type Response struct {
-		Status  string    `json:"status"`
-		Error   string    `json:"error"`
-		Product []Product `json:"product"`
+		Status        string    `json:"status"`
+		Error         string    `json:"error"`
+		Product       []Product `json:"product"`
+		MinMethodCoef float64   `json:"min_method_coef"`
 	}
 	var resp Response
 	err = json.Unmarshal([]byte(body), &resp)
 	if err != nil {
-		return nil, err
+		return nil, 1.0, err
 	}
 
 	if resp.Status != "success" {
-		return nil, fmt.Errorf("GetProducts request failed, status: %v, error: %v", resp.Status, resp.Error)
+		return nil, 1.0, fmt.Errorf("GetProducts request failed, status: %v, error: %v", resp.Status, resp.Error)
 	}
 
-	return resp.Product, nil
+	return resp.Product, resp.MinMethodCoef, nil
+}
+
+type ExchangeRateResponse struct {
+	Status string  `json:"status"`
+	Error  string  `json:"error"`
+	Rate   float64 `json:"rate"`
+}
+
+func (x KassaClient) Exchange(amount float64, from string, to string) (float64, error) {
+	type Request struct {
+		Amount float64 `json:"amount"`
+		From   string  `json:"from"`
+		To     string  `json:"to"`
+	}
+
+	jsonData, err := json.Marshal(Request{Amount: amount, From: from, To: to})
+	if err != nil {
+		return 0, err
+	}
+
+	req, err := http.NewRequest("POST", x.BaseUrl+"/exchange", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return 0, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("token", x.Token)
+
+	code, body, err := execute(req)
+	if err != nil {
+		return 0, err
+	}
+
+	var resp ExchangeRateResponse
+	err = json.Unmarshal([]byte(body), &resp)
+	if err != nil {
+		return 0, err
+	}
+
+	if code != 200 || resp.Status != "success" {
+		return 0, fmt.Errorf("exchange request failed, code: %v, status: %v, error: %v", code, resp.Status, resp.Error)
+	}
+
+	return amount * resp.Rate, nil
 }
 
 func (x KassaClient) PayStatus(providerPayId string) (PaymentStatusResponse, error) {
