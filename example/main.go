@@ -16,7 +16,7 @@ func main() {
 
 	fmt.Printf("\n=== STEAM TEST ===\n")
 	// Валидируем Steam аккаунт
-	valid, serverId, serverName, err := cli.Validate("steam", "world_dragon_508")
+	valid, serverId, serverName, err := cli.Validate("steam", "world_dragon_508", "")
 	fmt.Printf("Steam validate results: valid - %v, serverId - %v, serverName - %v, error: %v\n", valid, serverId, serverName, err)
 
 	// Создаем корзину для Steam
@@ -31,10 +31,10 @@ func main() {
 
 	fmt.Printf("\n=== GENSHIN IMPACT TEST (cart coef example) ===\n")
 	// Валидируем Genshin аккаунт
-	validGenshin, serverId, serverName, errGenshin := cli.Validate("genshin", "783437191")
+	validGenshin, serverId, serverName, errGenshin := cli.Validate("genshin", "783437191", "")
 	fmt.Printf("Genshin validate results: valid - %v, serverId - %v, serverName - %v, error: %v\n", validGenshin, serverId, serverName, errGenshin)
 	// Получаем продукты для Genshin
-	productGenshin, errGenshin2 := cli.Product("genshin", serverId, "")
+	productGenshin, _, errGenshin2 := cli.Product("genshin", serverId, "")
 	fmt.Printf("Genshin product result: %#v, error: %v\n", productGenshin, errGenshin2)
 
 	// Создаем корзину для Genshin с сервером и коэффициентом
@@ -50,18 +50,18 @@ func main() {
 
 	fmt.Printf("\n=== HONKAI STAR RAIL TEST ===\n")
 	// Валидируем HSR аккаунт
-	validHSR, serverId, serverName, errHSR := cli.Validate("honkai-star-rail", "722354753")
+	validHSR, serverId, serverName, errHSR := cli.Validate("honkai-star-rail", "722354753", "")
 	fmt.Printf("HSR validate results: valid - %#v, serverId - %v, serverName - %v, error: %v\n", validHSR, serverId, serverName, errHSR)
 	// Получаем продукты для HSR
-	productHSR, errHSR2 := cli.Product("honkai-star-rail", serverId, "")
+	productHSR, _, errHSR2 := cli.Product("honkai-star-rail", serverId, "")
 	fmt.Printf("HRS product result: %#v, error: %v\n", productHSR, errHSR2)
 
 	fmt.Printf("\n=== ZENLESS ZONE ZERO TEST ===\n")
 	// Валидируем ZZZ аккаунт
-	validZZZ, serverId, serverName, errZZZ := cli.Validate("zenless-zone-zero", "1506168129")
+	validZZZ, serverId, serverName, errZZZ := cli.Validate("zenless-zone-zero", "1506168129", "")
 	fmt.Printf("ZZZ validate results: valid - %v, serverId - %v, serverName - %v, error: %v\n", validZZZ, serverId, serverName, errZZZ)
 	// Получаем продукты для ZZZ
-	productZZZ, errZZZ2 := cli.Product("zenless-zone-zero", serverId, "")
+	productZZZ, _, errZZZ2 := cli.Product("zenless-zone-zero", serverId, "")
 	fmt.Printf("ZZZ product result: %#v, error: %v\n", productZZZ, errZZZ2)
 
 	fmt.Printf("\n=== PAY STATUS TEST ===\n")

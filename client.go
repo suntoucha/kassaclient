@@ -13,11 +13,15 @@ type KassaClient struct {
 	Token   string `json:"token"`
 }
 
-func (x KassaClient) Validate(game string, account string) (bool, string, string, error) {
+func (x KassaClient) Validate(game string, account string, serverId string) (bool, string, string, error) {
 	type Request struct {
-		Account string `json:"account"`
+		Account  string `json:"account"`
+		ServerId string `json:"server_id,omitempty"`
 	}
-	jsonData, err := json.Marshal(Request{Account: account})
+	jsonData, err := json.Marshal(Request{
+		Account:  account,
+		ServerId: serverId,
+	})
 	if err != nil {
 		return false, "", "", err
 	}
