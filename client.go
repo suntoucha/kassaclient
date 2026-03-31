@@ -59,10 +59,19 @@ func (x KassaClient) Validate(game string, account string, serverId string) (boo
 }
 
 type PaymentOption struct {
-	ProviderPayId string  `json:"provider_pay_id"`
-	Price         float64 `json:"price"`
-	Method        string  `json:"method"`
-	Url           string  `json:"url"`
+	ProviderPayId string    `json:"provider_pay_id"`
+	Price         float64   `json:"price"`
+	Method        string    `json:"method"`
+	Url           string    `json:"url"`
+	GiftCard      *GiftCard `json:"gift_card,omitempty"`
+}
+
+type GiftCard struct {
+	Code        string `json:"code"`
+	Serial      string `json:"serial"`
+	AmountCents int    `json:"amount_cents"`
+	ExpiresAt   string `json:"expires_at"`
+	Message     string `json:"message"`
 }
 
 type Cart struct {
@@ -141,10 +150,11 @@ func (x KassaClient) Cart(cartId string, game string, account string, amount flo
 }
 
 type Callback struct {
-	ProviderPayId string `json:"provider_pay_id"`
-	CartId        string `json:"cart_id"`
-	Status        string `json:"status"`
-	Error         string `json:"error"`
+	ProviderPayId string    `json:"provider_pay_id"`
+	CartId        string    `json:"cart_id"`
+	Status        string    `json:"status"`
+	Error         string    `json:"error"`
+	GiftCard      *GiftCard `json:"gift_card,omitempty"`
 }
 
 func (x KassaClient) ParseCallback(r *http.Request) (Callback, error) {
