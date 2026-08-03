@@ -131,6 +131,10 @@ func (x KassaClient) Cart(cartId string, game string, account string, amount flo
 		return Cart{}, err
 	}
 
+	if code != 200 {
+		return Cart{}, fmt.Errorf("[%v], %v", code, string(body))
+	}
+
 	type Response struct {
 		Status string `json:"status"`
 		Error  string `json:"error"`
@@ -142,7 +146,7 @@ func (x KassaClient) Cart(cartId string, game string, account string, amount flo
 		return Cart{}, err
 	}
 
-	if code != 200 || resp.Status != "success" {
+	if resp.Status != "success" {
 		return Cart{}, fmt.Errorf("Cart request failed, code: %v, status: %v, error: %v", code, resp.Status, resp.Error)
 	}
 
